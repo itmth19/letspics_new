@@ -64,7 +64,7 @@ function responseTo(req,res){
 
     case "/user/send/pic":
       /*if is post request*/
-      if (req.method.toLowerCase() == 'post'){
+      if (req.method.toLowerCase() == 'post') {
         uploadFile(req,res);
       }
       break;
@@ -79,32 +79,32 @@ function responseTo(req,res){
   }
 }
 
-function getUserInfo(id,res){
+function getUserInfo(id, res) {
   var query = "SELECT * FROM Users ";
-  query += "WHERE ID = " + db.escape(id);
-  cnn.query(query,function(error,rows,fields){
-    if(error){
-        returnError(res);
-    } 
-    else{
-      /*get the result*/ 
-        var result = JSON.stringify(rows[0]);
-        returnJsonString(result,res);
+  query += "WHERE ID = ?;";
+  cnn.query(query, [id], function(error, rows, fields) {
+    if (error) {
+      returnError(res);
+    } else {
+      /* get the result */ 
+      var result = JSON.stringify(rows[0]);
+      returnJsonString(result,res);
     }
   });
 }
 
-function getFriendsList(id,res){//作成中
-  //get user from different countries
-  //var user = JSON.parse(getUserInfo(id));
-  //var result = '';
-  //var result = {};
-  var query = "SELECT * FROM Users ";
-  query += "WHERE ID = " + db.escape(id) + " ";
-  query += "AND country <> " + user["country"] + " "; //set different coutries
-  cnn.query(query,function(error,rows,fields){
-    if(error) throw "ERROR";
-    result = rows;
+function getFriendsList(id, res) {
+  var query = "SELECT * FROM Users WHERE ID IN (";
+  query += "SELECT ID1 FROM FriendList WHERE ID2 = ? UNION ";
+  query += "SELECT ID2 FROM FriendList WHERE ID1 = ?)";
+  query += ");";
+  cnn.query(query, [id, id], function(error, rows, fields) {
+    if (error) {
+      returnError(res);
+    } else {
+      var result = JSON.stringify(rows[0]);
+      returnJsonString(result,res);
+    }
   });
   
   return JSON.stringify(result);
@@ -125,20 +125,34 @@ function makeFriendWith(user_id,friend_id) {
     });
 }
 
-function sendMessage(user_id,friend_id,message){
-  /*send message from user to friend*/
-
-  /*add updates to friend's updates*/
+function sendMessage(user_id, friend_id, message, reply_id) {
+  if (friend_id == 0) {
+    var query = "SELECT ID FROM Users ORDER BY RAND() limit 1;"
+    cnn.query(query, function(error, rows, fields) {
+      if (error) {
+        throw error;
+      } else {
+        friend_id = rows[0].ID;
+      }
+    });
+  }
+  var query = "INSERT INTO Messages (fromID, toID, message, replyMsgID)";
+  query = "VALUES (?, ?, ?, ?)";
+  cnn.query(query, [user_id, friend_id, message, reply_id], function(error, fields) {
+    if (error) {
+      throw error;
+    }
+  });
   
-  /*add updates to user's updates*/
 }
 
 function userRegistration(facebook_id, name, country, sex) {
   var query = '';
   query = "INSERT IGNORE INTO Users (FacebookID, name, country, sex) VALUES (?, ?, ?, ?)";
-  cnn.query(query, [facebook_id, name, country, sex], function(error,fields){
-    if(error) {
-      returnError(res);
+  cnn.query(query, [facebook_id, name, country, sex], function(error, fields) {
+    if (error) {
+      throw error;
+    }
   });
   
 }
@@ -183,6 +197,3 @@ function uploadFile(req,res){
 
   return;
 }
-
-
-
