@@ -64,7 +64,7 @@ function responseTo(req,res){
 
     case "/user/send/pic":
       /*if is post request*/
-      if (req.method.toLowerCase() == 'post'){
+      if (req.method.toLowerCase() == 'post') {
         uploadFile(req,res);
       }
       break;
@@ -125,20 +125,33 @@ function makeFriendWith(user_id,friend_id) {
     });
 }
 
-function sendMessage(user_id,friend_id,message){
-  /*send message from user to friend*/
-
-  /*add updates to friend's updates*/
+function sendMessage(user_id, friend_id, message, reply_id) {
+  if (friend_id == 0) {
+    var query = "SELECT ID FROM Users ORDER BY RAND() limit 1;"
+    cnn.query(query, function(error, rows, fields) {
+      if (error) {
+        throw error;
+      } else {
+        friend_id = rows[0].ID;
+      }
+    });
+  }
+  var query = "INSERT INTO Messages (fromID, toID, message, replyMsgID)";
+  query = "VALUES (?, ?, ?, ?)";
+  cnn.query(query, [user_id, friend_id, message, reply_id], function(error, fields) {
+    if (error) {
+      throw error;
+    }
+  });
   
-  /*add updates to user's updates*/
 }
 
 function userRegistration(facebook_id, name, country, sex) {
   var query = '';
   query = "INSERT IGNORE INTO Users (FacebookID, name, country, sex) VALUES (?, ?, ?, ?)";
-  cnn.query(query, [facebook_id, name, country, sex], function(error,fields){
-    if(error) {
-      returnError(res);
+  cnn.query(query, [facebook_id, name, country, sex], function(error, fields) {
+    if (error) {
+      throw error;
     }
   });
   
