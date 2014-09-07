@@ -79,32 +79,32 @@ function responseTo(req,res){
   }
 }
 
-function getUserInfo(id,res){
+function getUserInfo(id, res) {
   var query = "SELECT * FROM Users ";
-  query += "WHERE ID = " + db.escape(id);
-  cnn.query(query,function(error,rows,fields){
-    if(error){
-        returnError(res);
-    } 
-    else{
-      /*get the result*/ 
-        var result = JSON.stringify(rows[0]);
-        returnJsonString(result,res);
+  query += "WHERE ID = ?;";
+  cnn.query(query, [id], function(error, rows, fields) {
+    if (error) {
+      returnError(res);
+    } else {
+      /* get the result */ 
+      var result = JSON.stringify(rows[0]);
+      returnJsonString(result,res);
     }
   });
 }
 
-function getFriendsList(id,res){//作成中
-  //get user from different countries
-  //var user = JSON.parse(getUserInfo(id));
-  //var result = '';
-  //var result = {};
-  var query = "SELECT * FROM Users ";
-  query += "WHERE ID = " + db.escape(id) + " ";
-  query += "AND country <> " + user["country"] + " "; //set different coutries
-  cnn.query(query,function(error,rows,fields){
-    if(error) throw "ERROR";
-    result = rows;
+function getFriendsList(id, res) {
+  var query = "SELECT * FROM Users WHERE ID IN (";
+  query += "SELECT ID1 FROM FriendList WHERE ID2 = ? UNION ";
+  query += "SELECT ID2 FROM FriendList WHERE ID1 = ?)";
+  query += ");";
+  cnn.query(query, [id, id], function(error, rows, fields) {
+    if (error) {
+      returnError(res);
+    } else {
+      var result = JSON.stringify(rows[0]);
+      returnJsonString(result,res);
+    }
   });
   
   return JSON.stringify(result);
@@ -139,6 +139,7 @@ function userRegistration(facebook_id, name, country, sex) {
   cnn.query(query, [facebook_id, name, country, sex], function(error,fields){
     if(error) {
       returnError(res);
+    }
   });
   
 }
@@ -183,6 +184,3 @@ function uploadFile(req,res){
 
   return;
 }
-
-
-
