@@ -44,7 +44,7 @@ my_http.createServer(function(req,res){
 sys.puts("Server is listening on port" + port);
 
 /*Reponse*/
-function responseTo(req,res){
+function responseTo(req,res){// 作成中
   var header = '';
   var body = '';
   var url_params = url.parse(req.url,true);
@@ -69,13 +69,10 @@ function responseTo(req,res){
       }
       break;
 
-    case "/user/like/pic":
-      likeAPicture(query["user_id"],query["pic_id"],res);
-      break;
 
-    /*case "/user/update/message":
+    case "/user/update/message":
     case "/user/send/message":
-    case "/user/get/friends":*/
+    case "/user/get/friends":
   }
 }
 
@@ -96,8 +93,7 @@ function getUserInfo(id, res) {
 function getFriendsList(id, res) {
   var query = "SELECT * FROM Users WHERE ID IN (";
   query += "SELECT ID1 FROM FriendList WHERE ID2 = ? UNION ";
-  query += "SELECT ID2 FROM FriendList WHERE ID1 = ?)";
-  query += ");";
+  query += "SELECT ID2 FROM FriendList WHERE ID1 = ?);";
   cnn.query(query, [id, id], function(error, rows, fields) {
     if (error) {
       returnError(res);
@@ -137,7 +133,7 @@ function sendMessage(user_id, friend_id, message, reply_id) {
     });
   }
   var query = "INSERT INTO Messages (fromID, toID, message, replyMsgID)";
-  query = "VALUES (?, ?, ?, ?)";
+  query += "VALUES (?, ?, ?, ?)";
   cnn.query(query, [user_id, friend_id, message, reply_id], function(error, fields) {
     if (error) {
       throw error;
@@ -147,8 +143,7 @@ function sendMessage(user_id, friend_id, message, reply_id) {
 }
 
 function userRegistration(facebook_id, name, country, sex) {
-  var query = '';
-  query = "INSERT IGNORE INTO Users (FacebookID, name, country, sex) VALUES (?, ?, ?, ?)";
+  var query = "INSERT IGNORE INTO Users (FacebookID, name, country, sex) VALUES (?, ?, ?, ?)";
   cnn.query(query, [facebook_id, name, country, sex], function(error, fields) {
     if (error) {
       throw error;
@@ -185,6 +180,27 @@ function uploadFile(req,res){
     res.write('ERROR');
     res.end();
   });
+  
+  var imgFileName = 'hoge.jpg';
+  var query = "SELECT ID FROM Users ORDER BY RAND() limit 1;"
+  var friend_id = query["friend_id"];
+  if (query["reply_id"] == 0) {
+    cnn.query(query, function(error, rows, fields) {
+      if (error) {
+        throw error;
+      } else {
+        friend_id = rows[0].ID;
+      }
+    });
+  }
+  query = "INSERT INTO Messages (fromID, toID, imgFileName, replyMsgID) ";
+  query += "VALUES (?, ?, ?, ?);";
+  cnn.query(query, [query["user_id"], friend_id, imgFileName, query["reply_id"]], function(error, rows, fields) {
+    if (error) {
+      throw error;
+    } 
+  });
+
 
   /*override the events when finish uploading*/
   form.on('end',function(error){
