@@ -96,8 +96,7 @@ function getUserInfo(id, res) {
 function getFriendsList(id, res) {
   var query = "SELECT * FROM Users WHERE ID IN (";
   query += "SELECT ID1 FROM FriendList WHERE ID2 = ? UNION ";
-  query += "SELECT ID2 FROM FriendList WHERE ID1 = ?)";
-  query += ");";
+  query += "SELECT ID2 FROM FriendList WHERE ID1 = ?);";
   cnn.query(query, [id, id], function(error, rows, fields) {
     if (error) {
       returnError(res);
