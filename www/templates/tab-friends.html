@@ -1,8 +1,9 @@
-<ion-view title="Friends">
+<ion-view title="友達">
   <ion-content class="has-header">
     <ion-list>
       <ion-item ng-repeat="friend in friends" type="item-text-wrap" href="#/tab/friend/{{friend.id}}">
-        {{friend.name}}
+        <h2>{{friend.name}}</h2>
+        <p>{{friend.nationality}}</p>
       </ion-item>
     </ion-list>
   </ion-content>

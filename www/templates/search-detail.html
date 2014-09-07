@@ -5,9 +5,25 @@
   The Friends service returns an array of friend data
 -->
 <div ng-controller="SearchDetailCtrl">
-<ion-view title="album">
+<ion-view title="写真を送信">
   <ion-content has-header="true" padding="true">
-	<button ng-click="getImage();">Get Image</button>
+     <!--<input type="file" accept="image/*" capture="camera">-->
+
+  <form id="uploadForm"
+        enctype="multipart/form-data"
+        action=""
+        method="post">
+    <div class="list">
+      <div class="item item-input-inset">
+	<label class="item-input-wrapper">
+	  <input type="file" id="userPhotoInput" name="displayImage" />
+	</label>
+	<button type="submit" class="button icon-left  ion-ios7-upload button-outline button-positive">
+	  アップロード
+	</button>
+      </div>
+    </div>
+  </form>
 	
   </ion-content>
 </ion-view>

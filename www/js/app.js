@@ -87,6 +87,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         }
       }
     })
+      
+    .state('tab.search-detail-upload', {
+      url: '/search/upload',
+      views: {
+        'tab-search': {
+          templateUrl: 'templates/search-detail.html',
+          controller: 'SearchDetailUploadCtrl'
+        }
+      }
+    })  
 	
 	
   // if none of the above states are matched, use this as the fallback
