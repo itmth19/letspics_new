@@ -1,6 +1,11 @@
 angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope) {
+  $scope.items = [];
+  $scope.items =  [
+    { id: 0, likes: '', img:''},
+  ];
+  
 })
 
 .controller('FriendsCtrl', function($scope, Friends) {

@@ -13,12 +13,11 @@
     </div>
     
       <!--Personal Images-->
-      <div class="list">
-  
-      <a class="item item-thumbnail-left" href="#/  ">
-        <img src="image.jpg">
-        <h2>Likes:</h2>
-      </a>
-      </div>    
+      <ion-list>
+	<ion-item ng-repeat="item in items" class="item-thumbnail-left" href="#">
+	  <h2>{{item.likes}}</h2>
+	</ion-item>
+      </ion-lsit>
+   
   </ion-content>
 </ion-view>
