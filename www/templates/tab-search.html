@@ -1,0 +1,13 @@
+<div ng-controller="SearchCtrl">
+<ion-view title="Search">
+  <ion-content class="has-header padding">
+      <ion-list>
+	<ion-item ng-repeat="search in searchlist" type="item item-icon-left" href="#/tab/search/{{search.id}}">
+	  <img src="getSearchItemImageLink(search);" />
+	  <h2>{{search.nationality}}</h2>
+	  <h2>{{search.gender}}</h2>
+	</ion-item>
+      </ion-lsit>
+  </ion-content>
+</ion-view>
+</div>
