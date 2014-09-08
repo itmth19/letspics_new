@@ -204,33 +204,33 @@ function uploadFile(req,res, query){
     user_id = fields["user_id"];
     reply_id = fields["reply_id"];
     friend_temp_id = fields["friend_id"];
+    country = fields["country"];
 
       var imgFileName = 'hoge';
-      var queryText = "SELECT ID FROM Users WHERE ID <> '" + user_id +"' ORDER BY RAND() limit 1 ;"    
+      var queryText = "SELECT ID FROM Users WHERE ID <> '" + user_id +"' AND country <> '" + country + "'ORDER BY RAND() limit 1 ;";
 
-      if (reply_id == 0) {
         cnn.query(queryText, function(error, rows, fields) {
            if (error) {
               throw error;
            } else {
+            if (reply_id == 0) {
               friend_id = rows[0].ID;
-              queryText = "INSERT INTO `letspic`.`messages` (`date`, `fromID`, `toID`, `isRead`, `message`, `imgName`, `replyMsgID`) ";
-              queryText +=" VALUES (CURRENT_TIMESTAMP, '" + user_id + "', '" + friend_id + "', '0', NULL, '" + imgFileName + "', '0');";
-              cnn.query(queryText, function(error, rows, fields) {
-                if (error) {
-                  throw error;
-                } 
-              });
-              if (makeFriendCheck(fields["reply_id"], 3)) {
-                  makeFriendWith(fields["user_id"], friend_id);
-              }
-              returnSuccess(res);
+            } else {
+              friend_id = friend_temp_id;
             }
-        });
-       }
-       else{
-        friend_id = friend_temp_id; 
-       }
+            queryText = "INSERT INTO `letspic`.`messages` (`date`, `fromID`, `toID`, `isRead`, `message`, `imgName`, `replyMsgID`) ";
+            queryText +=" VALUES (CURRENT_TIMESTAMP, '" + user_id + "', '" + friend_id + "', '0', NULL, '" + imgFileName + "', '" + reply_id + "');";
+            cnn.query(queryText, function(error, rows, fields) {
+              if (error) {
+                throw error;
+              } 
+            });
+            if (makeFriendCheck(fields["reply_id"], 3)) {
+                makeFriendWith(fields["user_id"], friend_id);
+            }
+            returnSuccess(res);
+          }
+      });
   });
   return;
 }
