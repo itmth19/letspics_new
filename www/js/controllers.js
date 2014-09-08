@@ -20,6 +20,11 @@ angular.module('starter.controllers', [])
    request.success(
                     function( html ) {
                         $scope.user = html
+			if($scope.user["sex"] == "female") {
+			  $scope.user["icon_gender"] = "woman" }
+			  else{
+			    $scope.user["icon_gender"] = "man";
+			  }
                     }
                 );
    
@@ -38,17 +43,30 @@ angular.module('starter.controllers', [])
   
   $scope.loadMore = function(){
     //get more message from the server
-  };  
+  };
+  
+  $scope.senderPicture = function(message){
+    if (message["sender"] == 0)  {
+      return "img/profile.jpg";
+    }else{
+      return '';
+    }
+  };
+  
+  $scope.sendMessage = function(){
+    
+    $scope.messages.push({content:$scope.mess_box,sender:0});
+  }
 })
 
 
 .controller('SearchCtrl', function($scope, Searchlist) {
   $scope.searchlist = Searchlist.all();
-  $scope.getSearchItemImageLink = function(searchitem){
+  $scope.getSearchItemIcon = function(searchitem){
     if (searchitem.gender == 'male') {
-      return 'icon_male.jpg';
+      return 'ion-man';
     }else{
-      return 'icon_female.jpg';
+      return 'ion-woman';
     }
   };
 })

@@ -2,9 +2,10 @@
 <ion-view title="検索">
   <ion-content class="has-header padding">
       <ion-list>
-	<ion-item ng-repeat="search in searchlist" class="item-thumbnail-left item-{{search.gender}}" href="#/tab/search/{{search.id}}">
-	  <h2>{{search.nationality}}</h2>
-	  <h2>{{search.gender}}</h2>
+	<ion-item ng-repeat="search in searchlist" class="no-padding item item-thumbnail-left item-{{search.gender}}" href="#/tab/search/{{search.id}}">
+	  <img ng-src="{{search.nation_img}}"></img>
+	  <h2 style="padding-top: 15px;color: white;">{{search.nationality}}</h2>
+	  <i style="font-size: 35px;" class="icon {{getSearchItemIcon(search)}}"></i>
 	</ion-item>
       </ion-lsit>
   </ion-content>
