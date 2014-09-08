@@ -57,29 +57,35 @@ angular.module('starter.controllers', [])
   $scope.searchitem = Searchlist.get($stateParams.searchId);
   $scope.formData = {};
   
-  $scope.processForm = function() {
-	$http({
-        method  : 'POST',
-        url     : 'http://localhost:8888/user/send/pic',
-        data    : $scope.formData,  // pass in data as strings
-        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
-    })
-        .success(function(data) {
-            console.log(data);
-            if (!data.success) {
-	      
-            } else {
-              
-            }
-        });
-    };
+  $scope.processForm = function(){
+        var file = $scope.myFile;
+        console.log('file is ' + JSON.stringify(file));
+        var uploadUrl = "http://localhost:8888/user/send/pic";
+        $scope.uploadFileToUrl(file, uploadUrl);
 
+  };
   
+  $scope.uploadFileToUrl = function(file, uploadUrl){
+        var fd = new FormData();
+        fd.append('file', file);
+        $http.post(uploadUrl, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .success(function(data){
+	  console.log(data);
+        })
+        .error(function(data){
+	  console.log(data);
+        });
+    }
   
 })
 
 .controller('SearchDetailUploadCtrl', function($scope,$stateParams,Searchlist) {
   //upload to server here
 })
+
+
 
 
