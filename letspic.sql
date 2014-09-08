@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2014 年 9 朁E07 日 19:28
+-- Generation Time: 2014 年 9 朁E08 日 02:08
 -- サーバのバージョン： 5.6.17
 -- PHP Version: 5.5.12
 
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `friendlist` (
 
 CREATE TABLE IF NOT EXISTS `messages` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fromID` int(11) NOT NULL,
   `toID` int(11) NOT NULL,
   `isRead` int(1) NOT NULL DEFAULT '0',
