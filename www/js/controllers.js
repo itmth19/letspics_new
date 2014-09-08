@@ -1,11 +1,29 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {
+.controller('DashCtrl', function($scope,$stateParams,$http) {
   $scope.items = [];
   $scope.items =  [
     { id: 0, likes: '', img:''},
   ];
   
+  
+  
+  user_id = 1;//for testing
+  
+  var request =  $http({
+                        method: "get",
+                        url: "http://localhost:8888/user",
+                        params: {
+                            user_id: user_id
+                        }
+                    });
+   request.success(
+                    function( html ) {
+                        $scope.user = html
+                    }
+                );
+   
+  console.log($scope.user);
 })
 
 .controller('FriendsCtrl', function($scope, Friends) {
@@ -35,8 +53,29 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('SearchDetailCtrl', function($scope,$stateParams,Searchlist) {
+.controller('SearchDetailCtrl', function($scope,$stateParams,$http,Searchlist) {
   $scope.searchitem = Searchlist.get($stateParams.searchId);
+  $scope.formData = {};
+  
+  $scope.processForm = function() {
+	$http({
+        method  : 'POST',
+        url     : 'http://localhost:8888/user/send/pic',
+        data    : $scope.formData,  // pass in data as strings
+        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+    })
+        .success(function(data) {
+            console.log(data);
+            if (!data.success) {
+	      
+            } else {
+              
+            }
+        });
+    };
+
+  
+  
 })
 
 .controller('SearchDetailUploadCtrl', function($scope,$stateParams,Searchlist) {
