@@ -4,6 +4,7 @@ var my_http = require('http');
 var url = require('url');
 var sendpic = require('./sendpic');
 var formidable = require('formidable');
+var util = require('util');
 
 /* Variables */
 var port ='8888';
@@ -66,9 +67,7 @@ function responseTo(req,res){// 作成中
     case "/user/send/pic":
       /*if is post request*/
       if (req.method.toLowerCase() == 'post') {
-
         uploadFile(req,res, query);
-
       }
       break;
     
@@ -191,8 +190,8 @@ function uploadFile(req,res, query){
   form.on ('fileBegin', function(name, file){
             //rename the incoming file to the file's name
             file.path = form.uploadDir + "/" + file.name;
+            sys.puts(file.path);
     });
-
 
   var imgFileName = 'hoge.jpg';
   var queryText = "SELECT ID FROM Users ORDER BY RAND() limit 1;"
@@ -224,6 +223,7 @@ function uploadFile(req,res, query){
   });
 
   form.parse(req, function(err,fields,files){
+    console.log(util.inspect({fields: fields, files: files}));
     returnSuccess(res);
   });
 
