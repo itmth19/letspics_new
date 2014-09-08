@@ -3,6 +3,7 @@ var db = require('mysql');
 var my_http = require('http');
 var url = require('url');
 var sendpic = require('./sendpic');
+//var formidable = require('formidable');
 
 /* Variables */
 var port ='8888';
@@ -57,19 +58,19 @@ function responseTo(req,res){// 作成中
       sys.puts('Index');
       returnSuccess(res);
       break;
-      
+    
     case "/user":
       getUserInfo(query["user_id"],res);
       break;
-
+    
     case "/user/send/pic":
       /*if is post request*/
       if (req.method.toLowerCase() == 'post') {
-        uploadFile(req,res);
+        uploadFile(req,res, query);
       }
       break;
-
-
+    
+    
     case "/user/update/message":
     case "/user/send/message":
     case "/user/get/friends":
@@ -106,7 +107,7 @@ function getFriendsList(id, res) {
   return JSON.stringify(result);
 }
 
-function makeFriendWith(user_id,friend_id) {
+function makeFriendWith(user_id, friend_id) {
   if (user_id > friend_id) {
     var tmp = user_id;
     user_id = friend_id;
@@ -170,7 +171,7 @@ function returnJsonString(json_string,res){
   res.end();
 }
 
-function uploadFile(req,res){
+function uploadFile(req,res, query){
   /*upload file code*/
   var form = new formidable.IncomingForm();
   form.uploadDir = upload_dir;
@@ -182,10 +183,10 @@ function uploadFile(req,res){
   });
   
   var imgFileName = 'hoge.jpg';
-  var query = "SELECT ID FROM Users ORDER BY RAND() limit 1;"
+  var queryText = "SELECT ID FROM Users ORDER BY RAND() limit 1;"
   var friend_id = query["friend_id"];
   if (query["reply_id"] == 0) {
-    cnn.query(query, function(error, rows, fields) {
+    cnn.query(queryText, function(error, rows, fields) {
       if (error) {
         throw error;
       } else {
@@ -193,14 +194,17 @@ function uploadFile(req,res){
       }
     });
   }
-  query = "INSERT INTO Messages (fromID, toID, imgFileName, replyMsgID) ";
-  query += "VALUES (?, ?, ?, ?);";
-  cnn.query(query, [query["user_id"], friend_id, imgFileName, query["reply_id"]], function(error, rows, fields) {
+  queryText = "INSERT INTO Messages (fromID, toID, imgName, replyMsgID) ";
+  queryText += "VALUES (?, ?, ?, ?);";
+  cnn.query(queryText, [query["user_id"], friend_id, imgFileName, query["reply_id"]], function(error, rows, fields) {
     if (error) {
       throw error;
     } 
   });
-
+  
+  if (makeFriendCheck(reply_id, 3)) {
+    makeFriendWith(user_id, friend_id);
+  }
 
   /*override the events when finish uploading*/
   form.on('end',function(error){
@@ -212,4 +216,25 @@ function uploadFile(req,res){
   });
 
   return;
+}
+
+function makeFriendCheck(reply_id, threshold) {
+  for (i = 0; i < threshold; i++) {
+    var query = "SELECT ID FROM Messages WHERE ID = ?;"
+    var results;
+    cnn.query(query, [reply_id], function(error, rows, fields) {
+      if (error) {
+        throw error;
+      } else if (rows.length > 0) {
+        reply_id = rows[0].ID;
+      } else {
+        results = false;
+      }
+    });
+    if (!results) {
+      return false;
+    }
+  
+  }
+  return true;
 }
