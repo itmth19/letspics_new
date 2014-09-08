@@ -10,7 +10,7 @@ var util = require('util');
 var port ='8888';
 var db_host = 'localhost';
 var db_user = 'root';
-var db_pass = '';
+var db_pass = 'root';
 var db_name = 'letspic';
 var db_port = '3306';
 
@@ -177,7 +177,7 @@ function returnJsonString(json_string,res){
 function uploadFile(req,res, query){
   /*upload file code*/
   var form = new formidable.IncomingForm();
-
+  
   form.uploadDir = upload_dir;
   form.keepExtensions = true;
 
@@ -193,40 +193,45 @@ function uploadFile(req,res, query){
             sys.puts(file.path);
     });
 
-  var imgFileName = 'hoge.jpg';
-  var queryText = "SELECT ID FROM Users ORDER BY RAND() limit 1;"
-  var friend_id = query["friend_id"];
-  if (query["reply_id"] == 0) {
-    cnn.query(queryText, function(error, rows, fields) {
-      if (error) {
-        throw error;
-      } else {
-        friend_id = rows[0].ID;
-      }
-    });
-  }
-  queryText = "INSERT INTO Messages (fromID, toID, imgName, replyMsgID) ";
-  queryText += "VALUES (?, ?, ?, ?);";
-  cnn.query(queryText, [query["user_id"], friend_id, imgFileName, query["reply_id"]], function(error, rows, fields) {
-    if (error) {
-      throw error;
-    } 
-  });
-  
-  if (makeFriendCheck(query["reply_id"], 3)) {
-    makeFriendWith(query["user_id"], query["friend_id"]);
-  }
-
+ 
   /*override the events when finish uploading*/
-  form.on('end',function(error){
-    returnSuccess(res);
+  form.on('end',function(error,fields,files){
+      returnSuccess(res);
   });
 
   form.parse(req, function(err,fields,files){
     console.log(util.inspect({fields: fields, files: files}));
-    returnSuccess(res);
-  });
+    user_id = fields["user_id"];
+    reply_id = fields["reply_id"];
+    friend_temp_id = fields["friend_id"];
 
+      var imgFileName = 'hoge';
+      var queryText = "SELECT ID FROM Users WHERE ID <> '" + user_id +"' ORDER BY RAND() limit 1 ;"    
+
+      if (reply_id == 0) {
+        cnn.query(queryText, function(error, rows, fields) {
+           if (error) {
+              throw error;
+           } else {
+              friend_id = rows[0].ID;
+              queryText = "INSERT INTO `letspic`.`messages` (`date`, `fromID`, `toID`, `isRead`, `message`, `imgName`, `replyMsgID`) ";
+              queryText +=" VALUES (CURRENT_TIMESTAMP, '" + user_id + "', '" + friend_id + "', '0', NULL, '" + imgFileName + "', '0');";
+              cnn.query(queryText, function(error, rows, fields) {
+                if (error) {
+                  throw error;
+                } 
+              });
+              if (makeFriendCheck(fields["reply_id"], 3)) {
+                  makeFriendWith(fields["user_id"], friend_id);
+              }
+              returnSuccess(res);
+            }
+        });
+       }
+       else{
+        friend_id = friend_temp_id; 
+       }
+  });
   return;
 }
 
