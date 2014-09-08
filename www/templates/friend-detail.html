@@ -8,9 +8,10 @@
   <ion-content has-header="true" padding="true">
     
     <ion-list>
-        <ion-item ng-repeat="message in messages" 
+        <ion-item class="item item-avatar" ng-repeat="message in messages track by $index" 
                   item="message"
                   >
+          <img src="{{senderPicture(message)}}"/>
            {{ message.content }}
         </ion-item>
       </ion-list>
@@ -30,11 +31,11 @@
           <div class="row">
             <div class="col col-90">
                 <label class="item-input-wrapper">
-                  <input type="text" name="message_input" placeholder="メッセージ">
+                  <input type="text" ng-model="mess_box" name="message_input" placeholder="メッセージ">
               </label>
             </div>
             <div class="col col-20">
-              <button class="button">
+              <button class="button" ng-click="sendMessage()">
                   送信
               </button>
             </div>

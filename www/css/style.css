@@ -1,7 +1,10 @@
 /* Empty. Add your own CSS if you like */
 .item-male a{
-    /*background: red;*/
+    background: #1CB2CE;
 }
 .item-female a{
-    /*background: blue;*/
+    background: #EF5EA3;
+}
+ion-item.no-padding {
+    padding: 0px !important;
 }

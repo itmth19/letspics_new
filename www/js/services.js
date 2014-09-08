@@ -30,14 +30,14 @@ angular.module('starter.services', [])
 
   // Some fake testing data
   var searchlist = [
-    { id: 0, nationality: 'American', gender:'male' },
-    { id: 1, nationality: 'American',gender:'female' },
-    { id: 2, nationality: 'Vietnamese',gender:'male' },
-    { id: 3, nationality: 'Vietnamese',gender:'female' },
-    { id: 4, nationality: 'Brazil', gender:'male' },
-    { id: 5, nationality: 'Brazil',gender:'female' },
-    { id: 6, nationality: 'Nepal',gender:'male' },
-    { id: 7, nationality: 'Nepal',gender:'female' }
+    { id: 0, nationality: 'American', gender:'male',nation_img:'img/america.png' },
+    { id: 1, nationality: 'American',gender:'female',nation_img:'img/america.png' },
+    { id: 2, nationality: 'Vietnamese',gender:'male',nation_img:'img/vietnam.png' },
+    { id: 3, nationality: 'Vietnamese',gender:'female',nation_img:'img/vietnam.png' },
+    { id: 4, nationality: 'Brazil', gender:'male',nation_img:'img/brazil.png' },
+    { id: 5, nationality: 'Brazil',gender:'female',nation_img:'img/brazil.png' },
+    { id: 6, nationality: 'Nepal',gender:'male',nation_img:'img/nepal.png' },
+    { id: 7, nationality: 'Nepal',gender:'female',nation_img:'img/nepal.png' }
   ];
 
   return {

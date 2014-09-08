@@ -1,22 +1,32 @@
 <ion-view title="プロファイル">
   <ion-content class="padding">
     <div class="item item-image">
-      <img src=""/>
+      <img src="img/profile.jpg"/>
     </div>
     <div class="item item-icon-left">
       <!--Nationality-->
+      <i style="color: black" class="icon ion-ios7-world"></i>
       <span>{{user.country}}</span>
     </div>
     <div class="item item-icon-left">
       <!--性別-->
+      <i style="color: black" class="icon ion-{{user.icon_gender}}"></i>
       <span>{{user.sex}}</span>
     </div>
     
       <!--Personal Images-->
       <ion-list>
 	<ion-item ng-repeat="item in items" class="item-thumbnail-left" href="#">
-	  <h2>{{item.likes}}</h2>
+          <img src="https://scontent-b.xx.fbcdn.net/hphotos-xpa1/v/t1.0-9/10649959_10204659247067589_795573924615283663_n.jpg?oh=759ee9b4aac0828f9cb78af750f7cf0a&oe=548896EF"/>
+	  <h2><i style="color:orange;font-size:27px;" class="ion-star"></i>：アさん</h2>
 	</ion-item>
+        
+        <ion-item ng-repeat="item in items" class="item-thumbnail-left" href="#">
+          <img src="https://fbcdn-sphotos-g-a.akamaihd.net/hphotos-ak-xpa1/v/t1.0-9/1379361_10203545593666950_1570234983_n.jpg?oh=8c624b4e4d2c01ff62ea6571fdf41c05&oe=548BC288&__gda__=1418050391_0184494e95257cf2071c4c95e5af6204"/>
+	  <h2><i style="color:orange;font-size:27px;" class="ion-star"></i>：Ｂさん</h2>
+	</ion-item>
+        
+        
       </ion-lsit>
    
   </ion-content>
