@@ -68,6 +68,9 @@ angular.module('starter.controllers', [])
   $scope.uploadFileToUrl = function(file, uploadUrl){
         var fd = new FormData();
         fd.append('file', file);
+	fd.append('user_id','1');
+	fd.append('reply_id',0);
+	
         $http.post(uploadUrl, fd, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
