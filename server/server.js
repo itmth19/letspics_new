@@ -3,12 +3,13 @@ var db = require('mysql');
 var my_http = require('http');
 var url = require('url');
 var sendpic = require('./sendpic');
+var formidable = require('formidable');
 
 /* Variables */
 var port ='8888';
 var db_host = 'localhost';
 var db_user = 'root';
-var db_pass = '';
+var db_pass = 'root';
 var db_name = 'letspic';
 var db_port = '3306';
 
@@ -65,7 +66,7 @@ function responseTo(req,res){// 作成中
     case "/user/send/pic":
       /*if is post request*/
       if (req.method.toLowerCase() == 'post') {
-        uploadFile(req,res);
+        uploadFile(req,res,query);
       }
       break;
 
@@ -79,6 +80,7 @@ function responseTo(req,res){// 作成中
 function getUserInfo(id, res) {
   var query = "SELECT * FROM Users ";
   query += "WHERE ID = ?;";
+  sys.puts(query);
   cnn.query(query, [id], function(error, rows, fields) {
     if (error) {
       returnError(res);
@@ -170,10 +172,13 @@ function returnJsonString(json_string,res){
   res.end();
 }
 
-function uploadFile(req,res){
+function uploadFile(req,res,query){
   /*upload file code*/
   var form = new formidable.IncomingForm();
+  var imgFileName = 'hoge.jpg';
+
   form.uploadDir = upload_dir;
+  form.keepExtensions = true;
 
   form.on('error',function(error){
     res.writeHeader(404,{"Content-Type":"text/plain"});
@@ -181,11 +186,15 @@ function uploadFile(req,res){
     res.end();
   });
   
-  var imgFileName = 'hoge.jpg';
-  var query = "SELECT ID FROM Users ORDER BY RAND() limit 1;"
+  form.on ('fileBegin', function(name, file){
+            //rename the incoming file to the file's name
+            file.path = form.uploadDir + "/" + file.name;
+    });
+
+  var queryText = "SELECT ID FROM Users ORDER BY RAND() limit 1;"
   var friend_id = query["friend_id"];
   if (query["reply_id"] == 0) {
-    cnn.query(query, function(error, rows, fields) {
+    cnn.query(queryText, function(error, rows, fields) {
       if (error) {
         throw error;
       } else {
@@ -193,9 +202,9 @@ function uploadFile(req,res){
       }
     });
   }
-  query = "INSERT INTO Messages (fromID, toID, imgFileName, replyMsgID) ";
-  query += "VALUES (?, ?, ?, ?);";
-  cnn.query(query, [query["user_id"], friend_id, imgFileName, query["reply_id"]], function(error, rows, fields) {
+  queryText = "INSERT INTO Messages (fromID, toID, imgName, replyMsgID) ";
+  queryText += "VALUES (?, ?, ?, ?);";
+  cnn.query(queryText, [query["user_id"], friend_id, imgFileName, query["reply_id"]], function(error, rows, fields) {
     if (error) {
       throw error;
     } 
