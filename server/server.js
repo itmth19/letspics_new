@@ -10,7 +10,7 @@ var util = require('util');
 var port ='8888';
 var db_host = 'localhost';
 var db_user = 'root';
-var db_pass = 'root';
+var db_pass = '';
 var db_name = 'letspic';
 var db_port = '3306';
 
@@ -213,8 +213,8 @@ function uploadFile(req,res, query){
     } 
   });
   
-  if (makeFriendCheck(reply_id, 3)) {
-    makeFriendWith(user_id, friend_id);
+  if (makeFriendCheck(query["reply_id"], 3)) {
+    makeFriendWith(query["user_id"], query["friend_id"]);
   }
 
   /*override the events when finish uploading*/
